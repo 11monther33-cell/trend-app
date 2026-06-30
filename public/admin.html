@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الآدمن</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        :root {
+            --primary: #6C3FE8;
+            --accent: #F04F8B;
+            --dark: #12112A;
+            --card-bg: #1E1C38;
+            --card-border: #2E2B52;
+            --text: #E8E6FF;
+            --warn: #F7B731;
+            --danger: #FF4757;
+            --success: #2ED573;
+        }
+        body { font-family: 'Tajawal', sans-serif; background: var(--dark); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 30px; }
+        h1, h2, h3 { margin-bottom: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 10px 18px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border); color: #fff; cursor: pointer;
+            border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 13px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active { background: var(--primary); border-color: var(--primary); }
+        .tab-btn:hover { opacity: 0.85; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .form-group { margin-bottom: 15px; }
+        input, textarea, select {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background: rgba(255,255,255,0.05); color: #fff;
+            font-family: 'Tajawal', sans-serif; box-sizing: border-box;
+        }
+        button.primary-btn {
+            width: 100%; padding: 12px; border: none; border-radius: 8px;
+            background: var(--primary); color: #fff; font-weight: bold; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-size: 16px; margin-top: 10px;
+        }
+        button:hover { opacity: 0.9; }
+
+        .list-group { margin-top: 20px; }
+        .list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 10px; border-bottom: 1px solid var(--card-border);
+            flex-wrap: wrap; gap: 10px;
+        }
+        .list-item small { color: #9B98C4; }
+
+        .action-btn {
+            padding: 6px 12px; border: none; border-radius: 6px; color: #fff;
+            cursor: pointer; font-family: 'Tajawal'; font-size: 12px; transition: all 0.2s;
+        }
+        .delete-btn { background: var(--danger); }
+        .suspend-btn { background: var(--warn); color: #000; }
+        .unsuspend-btn { background: var(--success); }
+        .detail-btn { background: rgba(108,63,232,0.3); border: 1px solid var(--primary); }
+
+        .error { color: var(--danger); text-align: center; display: none; margin-top: 10px; }
+        .success { color: var(--success); text-align: center; display: none; margin-top: 10px; }
+
+        .header-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .back-btn { width: auto; padding: 6px 12px; background: transparent; border: 1px solid var(--card-border); color: #fff; cursor: pointer; font-family: 'Tajawal'; border-radius: 6px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--card-border); }
+        .stat-box h2 { margin: 0 0 8px; font-size: 32px; }
+        .stat-box h2.purple { color: var(--primary); }
+        .stat-box h2.red { color: var(--danger); }
+        .stat-box h2.yellow { color: var(--warn); }
+        .stat-box h2.green { color: var(--success); }
+        .stat-box p { font-size: 13px; color: #9B98C4; margin: 0; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px 8px; text-align: right; border-bottom: 1px solid var(--card-border); font-size: 13px; }
+        th { color: #9B98C4; font-size: 12px; font-weight: 700; }
+        td { color: var(--text); }
+
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .badge-danger { background: rgba(255,71,87,0.2); color: var(--danger); }
+        .badge-warn { background: rgba(247,183,49,0.2); color: var(--warn); }
+        .badge-ok { background: rgba(46,213,115,0.15); color: var(--success); }
+        .badge-suspended { background: rgba(255,71,87,0.3); color: #fff; }
+
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
+        .filter-bar select { width: auto; min-width: 120px; }
+        .filter-bar label { font-size: 13px; color: #9B98C4; }
+
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 25px; max-width: 700px; width: 90%;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-close { float: left; cursor: pointer; font-size: 20px; background: none; border: none; color: var(--text); }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            table { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <a href="/" style="color: var(--text); text-decoration: none;"><button class="back-btn">العودة للموقع</button></a>
+            <button class="back-btn" onclick="logout()" style="border-color: var(--danger); color: var(--danger);">تسجيل خروج</button>
+        </div>
+        <h1>لوحة تحكم النظام ⚙️</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('stats', this)">الإحصائيات والعملاء</button>
+            <button class="tab-btn" onclick="showTab('security', this)">الأمان والمراقبة 🛡️</button>
+            <button class="tab-btn" onclick="showTab('cards', this)">إدارة الأفكار 📝</button>
+        </div>
+
+        <!-- ==================== TAB 1: STATS & USERS ==================== -->
+        <div id="stats" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-box"><h2 class="purple" id="totalUsersCount">0</h2><p>إجمالي العملاء</p></div>
+            </div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 280px;">
+                    <h3>آخر عمليات الدخول</h3>
+                    <table><thead><tr><th>العميل</th><th>آخر دخول</th></tr></thead><tbody id="recentLoginsTable"></tbody></table>
+                </div>
+                <div style="flex: 1; min-width: 280px;">
+                    <h3>أكثر الكلمات بحثاً</h3>
+                    <table><thead><tr><th>الكلمة</th><th>المرات</th></tr></thead><tbody id="topSearchesTable"></tbody></table>
+                </div>
+            </div>
+            <hr style="border-color: var(--card-border); margin: 30px 0;">
+            <h2>إضافة عميل جديد 👤</h2>
+            <form onsubmit="addUser(event)">
+                <div class="form-group"><label>اسم العميل</label><input type="text" id="newUsername" required></div>
+                <div class="form-group"><label>كلمة المرور</label><input type="text" id="newPassword" required></div>
+                <button type="submit" class="primary-btn">إضافة العميل</button>
+                <div id="msgBox" class="error"></div>
+            </form>
+            <div class="list-group">
+                <h3>إدارة العملاء</h3>
+                <div id="usersContainer">جاري التحميل...</div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: SECURITY ==================== -->
+        <div id="security" class="tab-content">
+            <div class="filter-bar">
+                <label>الفترة:</label>
+                <select id="securityPeriod" onchange="fetchSecurity()">
+                    <option value="7">آخر 7 أيام</option>
+                    <option value="30">آخر 30 يوم</option>
+                    <option value="90">آخر 90 يوم</option>
+                </select>
+            </div>
+
+            <div class="stats-grid" id="securityStats">
+                <div class="stat-box"><h2 class="red" id="alertsCount">0</h2><p>تنبيهات مشاركة</p></div>
+                <div class="stat-box"><h2 class="yellow" id="devicesCount">0</h2><p>إجمالي الأجهزة</p></div>
+                <div class="stat-box"><h2 class="purple" id="uniqueIPsCount">0</h2><p>IPs فريدة</p></div>
+                <div class="stat-box"><h2 class="red" id="suspendedCountBox">0</h2><p>حسابات معلّقة</p></div>
+                <div class="stat-box"><h2 class="yellow" id="suspiciousCount">0</h2><p>حسابات مشبوهة</p></div>
+            </div>
+
+            <h3>⚠️ حسابات مشبوهة (مرتبة بدرجة المخاطرة)</h3>
+            <table>
+                <thead><tr><th>العميل</th><th>الأجهزة</th><th>IPs</th><th>الدول</th><th>Risk Score</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                <tbody id="suspiciousTable"></tbody>
+            </table>
+
+            <hr style="border-color: var(--card-border); margin: 30px 0;">
+
+            <h3>📊 جميع العملاء - درجة المخاطرة</h3>
+            <table>
+                <thead><tr><th>العميل</th><th>الأجهزة</th><th>IPs</th><th>الدول</th><th>Risk</th><th>تنبيهات</th></tr></thead>
+                <tbody id="allUsersRiskTable"></tbody>
+            </table>
+
+            <hr style="border-color: var(--card-border); margin: 30px 0;">
+
+            <h3>📋 سجل عمليات الدخول الكامل</h3>
+            <div class="filter-bar">
+                <label>تصفية بالعميل:</label>
+                <select id="logUserFilter" onchange="fetchLoginLogs()">
+                    <option value="">الكل</option>
+                </select>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>العميل</th><th>التاريخ</th><th>المتصفح</th><th>النظام</th><th>الشاشة</th><th>IP</th><th>الموقع</th><th>حالة</th></tr></thead>
+                    <tbody id="loginLogsTable"></tbody>
+                </table>
+            </div>
+
+            <hr style="border-color: var(--card-border); margin: 30px 0;">
+
+            <h3>📱 تبديل التبويب المتكرر (مؤشر احتمالي)</h3>
+            <p style="font-size:12px; color:#9B98C4; margin-bottom:10px;">هذه إشارة احتمالية فقط وليست دقيقة. تبديل التبويب سلوك طبيعي وقد لا يعني شيئاً مريباً.</p>
+            <table>
+                <thead><tr><th>العميل</th><th>عدد مرات التبديل</th></tr></thead>
+                <tbody id="tabSwitchTable"></tbody>
+            </table>
+        </div>
+
+        <!-- ==================== TAB 3: CARDS ==================== -->
+        <div id="cards" class="tab-content">
+            <h2>إضافة فكرة جديدة 📝</h2>
+            <form onsubmit="addCard(event)">
+                <div class="form-group"><label>رقم الفكرة</label><input type="text" id="cardNum" required></div>
+                <div class="form-group"><label>المنصة (TikTok)</label><input type="text" id="cardBadge" required></div>
+                <div class="form-group"><label>التصنيف (🎬 افتتاح المتجر)</label><input type="text" id="cardTag" required></div>
+                <div class="form-group"><label>النص والشرح</label><textarea id="cardText" rows="3" required></textarea></div>
+                <div class="form-group"><label>رابط النموذج</label><input type="url" id="cardUrl"></div>
+                <button type="submit" class="primary-btn">حفظ الفكرة</button>
+                <div id="cardMsgBox" class="error"></div>
+            </form>
+            <hr style="border-color: var(--card-border); margin: 30px 0;">
+            <h3>الأفكار الحالية</h3>
+            <div id="cardsContainer" class="list-group">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: تفاصيل أجهزة المستخدم ==================== -->
+    <div class="modal-overlay" id="deviceModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 id="modalTitle">أجهزة المستخدم</h2>
+            <div id="modalContent">جاري التحميل...</div>
+        </div>
+    </div>
+
+<script>
+const token = localStorage.getItem('trend_token');
+const username = localStorage.getItem('trend_username');
+if (!token || username !== 'monther') { alert('غير مصرح لك'); window.location.href = '/'; }
+
+function showTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+    if (tabId === 'security') { fetchSecurity(); fetchLoginLogs(); }
+}
+
+const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+const authHeaders = { 'Authorization': 'Bearer ' + token };
+
+// ==================== TAB 1: STATS ====================
+async function fetchStats() {
+    try {
+        const res = await fetch('/api/admin/stats', { headers: authHeaders });
+        const s = await res.json();
+        document.getElementById('totalUsersCount').textContent = s.totalUsers;
+        document.getElementById('recentLoginsTable').innerHTML = s.recentLogins.map(l =>
+            `<tr><td>${l.username}</td><td dir="ltr">${l.last_login || 'لم يدخل'}</td></tr>`
+        ).join('');
+        document.getElementById('topSearchesTable').innerHTML = s.topSearches.map(s =>
+            `<tr><td>${s.keyword}</td><td>${s.count}</td></tr>`
+        ).join('');
+    } catch(e) { console.error(e); }
+}
+
+async function fetchUsers() {
+    try {
+        const res = await fetch('/api/admin/users', { headers: authHeaders });
+        const users = await res.json();
+        const c = document.getElementById('usersContainer');
+        c.innerHTML = users.length === 0 ? '<p>لا يوجد عملاء</p>' : '';
+
+        // ملء فلتر السجل
+        const filter = document.getElementById('logUserFilter');
+        filter.innerHTML = '<option value="">الكل</option>' + users.map(u => `<option value="${u.username}">${u.username}</option>`).join('');
+
+        users.forEach(u => {
+            const statusBadge = u.suspended
+                ? '<span class="badge badge-suspended">معلّق</span>'
+                : '<span class="badge badge-ok">نشط</span>';
+            const suspendBtn = u.suspended
+                ? `<button class="action-btn unsuspend-btn" onclick="unsuspendUser(${u.id})">إلغاء التعليق</button>`
+                : `<button class="action-btn suspend-btn" onclick="suspendUser(${u.id})">تعليق ⛔</button>`;
+
+            c.innerHTML += `
+                <div class="list-item">
+                    <div>
+                        <strong>${u.username}</strong> ${statusBadge}<br>
+                        <small>آخر دخول: ${u.last_login || 'لم يدخل'}</small>
+                    </div>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="action-btn detail-btn" onclick="showDevices(${u.id}, '${u.username}')">الأجهزة 📱</button>
+                        ${suspendBtn}
+                        <button class="action-btn delete-btn" onclick="deleteUser(${u.id})">حذف 🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+    } catch(e) { console.error(e); }
+}
+
+async function addUser(e) {
+    e.preventDefault();
+    const u = document.getElementById('newUsername'), p = document.getElementById('newPassword');
+    const m = document.getElementById('msgBox');
+    const res = await fetch('/api/admin/users', { method:'POST', headers, body: JSON.stringify({ username: u.value.trim(), password: p.value }) });
+    const d = await res.json(); m.style.display = 'block';
+    if (res.ok) { m.className='success'; m.textContent='تم الإضافة!'; u.value=''; p.value=''; fetchUsers(); fetchStats(); }
+    else { m.className='error'; m.textContent=d.error||'خطأ'; }
+}
+async function deleteUser(id) { if(!confirm('حذف العميل؟')) return; await fetch('/api/admin/users/'+id, {method:'DELETE', headers:authHeaders}); fetchUsers(); fetchStats(); }
+async function suspendUser(id) { if(!confirm('تعليق الحساب؟ سيتم منعه من الدخول فوراً.')) return; await fetch('/api/admin/suspend/'+id, {method:'POST', headers:authHeaders}); fetchUsers(); fetchSecurity(); }
+async function unsuspendUser(id) { await fetch('/api/admin/unsuspend/'+id, {method:'POST', headers:authHeaders}); fetchUsers(); fetchSecurity(); }
+
+// ==================== TAB 2: SECURITY ====================
+async function fetchSecurity() {
+    const days = document.getElementById('securityPeriod').value;
+    try {
+        const res = await fetch('/api/admin/security?days=' + days, { headers: authHeaders });
+        const s = await res.json();
+
+        document.getElementById('alertsCount').textContent = s.totalAlerts;
+        document.getElementById('devicesCount').textContent = s.totalDevices;
+        document.getElementById('uniqueIPsCount').textContent = s.totalUniqueIPs || 0;
+        document.getElementById('suspendedCountBox').textContent = s.suspendedCount;
+        document.getElementById('suspiciousCount').textContent = (s.suspiciousUsers || []).length;
+
+        // جدول الحسابات المشبوهة
+        const st = document.getElementById('suspiciousTable');
+        st.innerHTML = (s.suspiciousUsers || []).map(u => {
+            const statusBadge = u.suspended ? '<span class="badge badge-suspended">معلّق</span>' : '<span class="badge badge-warn">نشط</span>';
+            const actionBtn = u.suspended
+                ? `<button class="action-btn unsuspend-btn" onclick="unsuspendUser(${u.id})">إلغاء</button>`
+                : `<button class="action-btn suspend-btn" onclick="suspendUser(${u.id})">تعليق ⛔</button>`;
+            const riskColor = u.risk_score >= 70 ? 'badge-danger' : u.risk_score >= 30 ? 'badge-warn' : 'badge-ok';
+            return `<tr>
+                <td><strong>${u.username}</strong></td>
+                <td><span class="badge badge-danger">${u.device_count}</span></td>
+                <td><span class="badge badge-warn">${u.ip_count}</span></td>
+                <td>${u.countries || '-'}</td>
+                <td><span class="badge ${riskColor}">${u.risk_score}/100</span></td>
+                <td>${statusBadge}</td>
+                <td>${actionBtn} <button class="action-btn detail-btn" onclick="showDevices(${u.id}, '${u.username}')">تفاصيل</button></td>
+            </tr>`;
+        }).join('') || '<tr><td colspan="7" style="text-align:center; color:#9B98C4;">لا توجد حسابات مشبوهة 🎉</td></tr>';
+
+        // جدول جميع العملاء مع درجة المخاطرة
+        const art = document.getElementById('allUsersRiskTable');
+        art.innerHTML = (s.allUsersRisk || []).map(u => {
+            const riskColor = u.risk_score >= 70 ? 'badge-danger' : u.risk_score >= 30 ? 'badge-warn' : 'badge-ok';
+            return `<tr>
+                <td>${u.username}</td>
+                <td>${u.device_count}</td>
+                <td>${u.ip_count}</td>
+                <td>${u.countries || '-'}</td>
+                <td><span class="badge ${riskColor}">${u.risk_score}/100</span></td>
+                <td>${u.alert_count || 0}</td>
+            </tr>`;
+        }).join('') || '<tr><td colspan="6" style="text-align:center; color:#9B98C4;">لا توجد بيانات</td></tr>';
+
+        // تبديل التبويب
+        const tt = document.getElementById('tabSwitchTable');
+        tt.innerHTML = (s.frequentTabSwitchers || []).map(t =>
+            `<tr><td>${t.username}</td><td>${t.count}</td></tr>`
+        ).join('') || '<tr><td colspan="2" style="text-align:center; color:#9B98C4;">لا توجد بيانات</td></tr>';
+
+    } catch(e) { console.error(e); }
+}
+
+async function fetchLoginLogs() {
+    const userFilter = document.getElementById('logUserFilter').value;
+    let url = '/api/admin/login-logs?limit=50';
+    if (userFilter) url += '&username=' + encodeURIComponent(userFilter);
+    try {
+        const res = await fetch(url, { headers: authHeaders });
+        const logs = await res.json();
+        const t = document.getElementById('loginLogsTable');
+        t.innerHTML = logs.map(l => {
+            const flagBadge = l.flagged ? `<span class="badge badge-danger" title="${l.flag_reason || ''}">⚠️ مشبوه</span>` : '<span class="badge badge-ok">عادي</span>';
+            return `<tr>
+                <td>${l.username}</td>
+                <td dir="ltr" style="font-size:11px;">${l.timestamp}</td>
+                <td>${l.browser || '-'}</td>
+                <td>${l.os || '-'}</td>
+                <td>${l.screen_resolution || '-'}</td>
+                <td dir="ltr">${l.ip || '-'}</td>
+                <td>${l.country || '-'}, ${l.city || '-'}</td>
+                <td>${flagBadge}</td>
+            </tr>`;
+        }).join('') || '<tr><td colspan="8" style="text-align:center;">لا توجد سجلات</td></tr>';
+    } catch(e) { console.error(e); }
+}
+
+async function showDevices(userId, name) {
+    document.getElementById('modalTitle').textContent = 'أجهزة: ' + name;
+    document.getElementById('modalContent').innerHTML = 'جاري التحميل...';
+    document.getElementById('deviceModal').classList.add('active');
+    try {
+        const res = await fetch('/api/admin/user-devices/' + userId, { headers: authHeaders });
+        const devices = await res.json();
+        if (devices.length === 0) {
+            document.getElementById('modalContent').innerHTML = '<p>لا توجد أجهزة مسجلة</p>';
+            return;
+        }
+        let html = '<table><thead><tr><th>المتصفح</th><th>النظام</th><th>الشاشة</th><th>المنطقة</th><th>IP</th><th>الموقع</th><th>أول ظهور</th><th>آخر ظهور</th></tr></thead><tbody>';
+        devices.forEach(d => {
+            html += `<tr>
+                <td>${d.browser||'-'}</td><td>${d.os||'-'}</td><td>${d.screen_resolution||'-'}</td>
+                <td>${d.timezone||'-'}</td><td dir="ltr">${d.ip||'-'}</td>
+                <td>${d.country||'-'}, ${d.city||'-'}</td>
+                <td dir="ltr" style="font-size:11px;">${d.first_seen||'-'}</td>
+                <td dir="ltr" style="font-size:11px;">${d.last_seen||'-'}</td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('modalContent').innerHTML = html;
+    } catch(e) { document.getElementById('modalContent').innerHTML = '<p style="color:var(--danger);">خطأ في الجلب</p>'; }
+}
+function closeModal() { document.getElementById('deviceModal').classList.remove('active'); }
+
+// ==================== TAB 3: CARDS ====================
+async function fetchCards() {
+    try {
+        const res = await fetch('/api/content', { headers: authHeaders });
+        const cards = await res.json();
+        const c = document.getElementById('cardsContainer'); c.innerHTML = '';
+        cards.reverse().forEach(card => {
+            c.innerHTML += `<div class="list-item">
+                <div><strong>#${card.num}</strong> ${card.tag} <br><small>${card.text.substring(0, 50)}...</small></div>
+                <button class="action-btn delete-btn" onclick="deleteCard(${card.id})">حذف 🗑️</button>
+            </div>`;
+        });
+    } catch(e) { console.error(e); }
+}
+async function addCard(e) {
+    e.preventDefault();
+    const num=document.getElementById('cardNum').value, badge=document.getElementById('cardBadge').value;
+    const tag=document.getElementById('cardTag').value, text=document.getElementById('cardText').value;
+    const url=document.getElementById('cardUrl').value;
+    const links = url ? [{label:'🔗 نموذج', url}] : [];
+    const m = document.getElementById('cardMsgBox');
+    const res = await fetch('/api/admin/cards', { method:'POST', headers, body: JSON.stringify({num,badge,tag,text,links}) });
+    if (res.ok) { m.style.display='block'; m.className='success'; m.textContent='تم الحفظ!'; e.target.reset(); fetchCards(); }
+    else { m.style.display='block'; m.className='error'; m.textContent='خطأ'; }
+}
+async function deleteCard(id) { if(!confirm('حذف الفكرة؟')) return; await fetch('/api/admin/cards/'+id, {method:'DELETE', headers:authHeaders}); fetchCards(); }
+
+function logout() { localStorage.clear(); window.location.href = '/'; }
+
+// === تحميل البيانات ===
+fetchStats(); fetchUsers(); fetchCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>افكار محتوى ترند - المجموعة الكاملة</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+
+  :root {
+    --primary: #6C3FE8;
+    --accent: #F04F8B;
+    --gold: #F7B731;
+    --dark: #12112A;
+    --card-bg: #1E1C38;
+    --card-border: #2E2B52;
+    --text: #E8E6FF;
+    --muted: #9B98C4;
+    --tiktok-red: #FE2C55;
+    --tiktok-blue: #25F4EE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #1A0938 0%, #2D1066 50%, #1A0938 100%);
+    padding: 50px 20px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(108,63,232,0.3) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%, rgba(240,79,139,0.2) 0%, transparent 60%);
+  }
+  .hero-inner { position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--tiktok-red), var(--primary));
+    color: #fff;
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 5vw, 48px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, var(--tiktok-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 500px;
+    margin: 0 auto 24px;
+  }
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 24px;
+    text-align: center;
+  }
+  .stat-box .num { font-size: 28px; font-weight: 800; color: var(--gold); }
+  .stat-box .lbl { font-size: 12px; color: var(--muted); }
+
+  /* SEARCH */
+  .search-bar {
+    max-width: 600px;
+    margin: 30px auto 0;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .search-bar input {
+    width: 100%;
+    padding: 14px 50px 14px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .search-bar input::placeholder { color: var(--muted); }
+  .search-bar input:focus { border-color: var(--primary); }
+  .search-bar .search-icon {
+    position: absolute;
+    left: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* SECTION TITLE */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-label .line {
+    flex: 1;
+    height: 1px;
+    background: var(--card-border);
+  }
+  .section-label span {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 30px rgba(108,63,232,0.2);
+  }
+  .card-header {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-num {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .tiktok-badge {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--tiktok-blue);
+    font-weight: 700;
+  }
+  .card-body {
+    padding: 16px;
+  }
+  .card-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #C8C6E8;
+    margin-bottom: 14px;
+  }
+  .links-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(108,63,232,0.15);
+    border: 1px solid rgba(108,63,232,0.3);
+    color: var(--tiktok-blue);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .link-btn:hover {
+    background: rgba(108,63,232,0.35);
+    color: #fff;
+  }
+
+  /* TIP TAG */
+  .tip-tag {
+    display: inline-block;
+    background: rgba(247,183,49,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(247,183,49,0.25);
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--card-border);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* HIGHLIGHT */
+  mark {
+    background: rgba(247,183,49,0.35);
+    color: var(--gold);
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .stats-row { gap: 12px; }
+  }
+
+  /* LOGIN OVERLAY */
+  .login-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: linear-gradient(135deg, #0c0a1f 0%, #1A0938 50%, #0c0a1f 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-box {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 36px 30px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .login-logo { font-size: 40px; margin-bottom: 10px; }
+  .login-box h2 { font-size: 22px; margin-bottom: 6px; color: #fff; }
+  .login-sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; line-height: 1.6; }
+  .login-box label { display: block; text-align: right; font-size: 13px; color: var(--muted); margin: 14px 0 6px; }
+  .login-box input {
+    width: 100%; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.06);
+    color: #fff; font-family: 'Tajawal', sans-serif; font-size: 14px; outline: none;
+    box-sizing: border-box;
+  }
+  .login-box input:focus { border-color: var(--primary); }
+  .login-box button {
+    width: 100%; margin-top: 22px; padding: 13px;
+    border: none; border-radius: 10px;
+    background: linear-gradient(90deg, var(--tiktok-red), var(--primary));
+    color: #fff; font-weight: 700; font-size: 15px; cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    transition: transform 0.15s;
+  }
+  .login-box button:hover { transform: translateY(-2px); }
+  .login-error {
+    display: none; color: #FF6B81; font-size: 12px; margin-top: 10px; text-align: right;
+  }
+
+  /* WATERMARK */
+  .watermark-layer {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; display: none;
+  }
+  .watermark-layer.active { display: block; }
+  .watermark-item {
+    position: absolute; color: rgba(255,255,255,0.05); font-size: 18px; font-weight: 800;
+    white-space: nowrap; transform: rotate(-28deg);
+  }
+
+  /* USER BAR */
+  .user-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 20px; background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--card-border); font-size: 13px; color: var(--text);
+  }
+  .logout-btn {
+    background: rgba(240,79,139,0.15); color: #fff; border: 1px solid rgba(240,79,139,0.3);
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'Tajawal', sans-serif;
+  }
+  .logout-btn:hover { background: rgba(240,79,139,0.3); }
+
+  /* Anti-copy CSS */
+  body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+
+
+</style>
+<script src="https://openfpcdn.io/fingerprintjs/v4" async></script>
+</head>
+<body>
+
+<!-- صفحة تسجيل الدخول -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">🔒</div>
+    <h2>تسجيل الدخول</h2>
+    <p class="login-sub">تحذير قانوني ⚠️: هذا المحتوى محمي بموجب حقوق الملكية الفكرية وقوانين النشر. أي محاولة لنسخ النصوص، تصوير الشاشة، استخدام أدوات القص، أو مشاركة حسابك مع أطراف أخرى ستعرضك للمساءلة القانونية والملاحقة القضائية الفورية، وسيتم إلغاء حسابك نهائياً دون أي تعويض.</p>
+    <form id="loginForm" onsubmit="attemptLogin(event)">
+      <label>الاسم</label>
+      <input type="text" id="loginName" placeholder="ادخل اسمك" required autocomplete="username">
+      <label>كلمة السر</label>
+      <input type="password" id="loginPass" placeholder="ادخل كلمة السر" required autocomplete="current-password">
+      <div class="login-error" id="loginError">الاسم أو كلمة السر غير صحيحة</div>
+      <button type="submit">دخول</button>
+    </form>
+    <p style="font-size:10px; color:#666; margin-top:14px; line-height:1.5; text-align:center;">
+      بتسجيل الدخول، أنت توافق على أنه يتم تسجيل عنوان IP الخاص بك، نوع الجهاز والمتصفح، والموقع الجغرافي التقريبي لأغراض أمنية ومنع مشاركة الحسابات غير المصرح بها. هذه البيانات محمية ولا تُشارك مع أطراف خارجية.
+    </p>
+  </div>
+</div>
+
+<!-- العلامة المائية -->
+
+
+<!-- المحتوى المحمي -->
+<div id="siteContent" style="display:none;">
+
+<div class="user-bar">
+  <span>مرحباً، <strong id="currentUserName"></strong> 👋</span>
+  <button class="logout-btn" onclick="logout()">تسجيل خروج 🚪</button>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">📱 TikTok & Instagram</div>
+    <h1>افكار محتوى ترند</h1>
+    <p>مجموعة كاملة من أفكار المحتوى الترند لتسويق متجرك ومنتجاتك</p>
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="num">420</div>
+        <div class="lbl">فكرة ترند</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">100%</div>
+        <div class="lbl">قابلة للتطبيق</div>
+      </div>
+      <div class="stat-box">
+        <div class="num">🔗</div>
+        <div class="lbl">روابط مباشرة</div>
+      </div>
+    </div>
+  </div>
+  <div class="search-bar" style="margin-top:28px;">
+    <input type="text" id="searchInput" placeholder="ابحث عن فكرة أو رقم..." oninput="filterCards()">
+    <span class="search-icon">🔍</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section-label">
+    <span>جميع الأفكار #1 — #421 (مرتبة)</span>
+    <div class="line"></div>
+  </div>
+  <div class="grid" id="cardsGrid">
+</div><!-- end grid -->
+</div><!-- end container -->
+
+<div class="footer">
+  <p>📱 جميع الأفكار من مجتمع خطة المحتوى | لأصحاب المتاجر والمشاريع الصغيرة</p>
+  <p style="margin-top:6px;">انسخ الفكرة ← اذهب للرابط ← طبق الترند على متجرك ✅</p>
+</div>
+
+</div><!-- end siteContent -->
+
+
+
+<script>
+let authToken = localStorage.getItem('trend_token') || null;
+let allCards = [];
+let searchTimeout = null;
+let deviceFingerprint = null;
+
+// === جمع بصمة الجهاز عبر FingerprintJS ===
+async function getDeviceFingerprint() {
+    try {
+        if (window.FingerprintJS) {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            return result.visitorId;
+        }
+    } catch(e) { console.warn('FingerprintJS not available'); }
+    // بصمة بديلة في حال عدم تحميل المكتبة
+    return navigator.userAgent + '|' + screen.width + 'x' + screen.height + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+function getDeviceInfo() {
+    const ua = navigator.userAgent;
+    let browser = 'Unknown';
+    if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
+    else if (ua.includes('Firefox')) browser = 'Firefox';
+    else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
+    else if (ua.includes('Edg')) browser = 'Edge';
+    else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+
+    let os = 'Unknown';
+    if (ua.includes('Windows')) os = 'Windows';
+    else if (ua.includes('Mac')) os = 'macOS';
+    else if (ua.includes('Linux')) os = 'Linux';
+    else if (ua.includes('Android')) os = 'Android';
+    else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+
+    return {
+        browser,
+        os,
+        screenResolution: screen.width + 'x' + screen.height,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+}
+
+async function loadContent() {
+    if (!authToken) return;
+    try {
+        const res = await fetch('/api/content', {
+            headers: { 'Authorization': 'Bearer ' + authToken }
+        });
+        if (res.ok) {
+            allCards = await res.json();
+            renderCards(allCards);
+            
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('siteContent').style.display = 'block';
+            
+            const username = localStorage.getItem('trend_username') || 'مستخدم';
+            document.getElementById('currentUserName').textContent = username;
+            
+            const isAdmin = localStorage.getItem('trend_isAdmin') === 'true';
+            if (isAdmin) {
+                if (!document.getElementById('adminBtn')) {
+                    const adminBtn = document.createElement('button');
+                    adminBtn.id = 'adminBtn';
+                    adminBtn.className = 'logout-btn';
+                    adminBtn.style.background = '#6C3FE8';
+                    adminBtn.style.marginRight = '10px';
+                    adminBtn.textContent = 'لوحة التحكم ⚙️';
+                    adminBtn.onclick = () => window.location.href = '/admin.html';
+                    document.querySelector('.user-bar').appendChild(adminBtn);
+                }
+            }
+        } else {
+            logout();
+        }
+    } catch (e) {
+        console.error('Error loading content', e);
+    }
+}
+
+function renderCards(cards) {
+    const container = document.getElementById('cardsGrid');
+    container.innerHTML = '';
+    cards.forEach(c => {
+        let linksHtml = c.links.map(l => `<a class="link-btn" href="${l.url}" target="_blank">${l.label}</a>`).join('');
+        container.innerHTML += `
+        <div class="card" data-text="${c.num} ${c.text}">
+          <div class="card-header"><span class="card-num">#${c.num}</span><span class="tiktok-badge">${c.badge}</span></div>
+          <div class="card-body">
+            <div class="tip-tag">${c.tag}</div>
+            <p class="card-text">${c.text}</p>
+            <div class="links-row">${linksHtml}</div>
+          </div>
+        </div>
+        `;
+    });
+}
+
+async function attemptLogin(e) {
+  e.preventDefault();
+  const name = document.getElementById('loginName').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errorEl = document.getElementById('loginError');
+
+  // جمع بصمة الجهاز ومعلوماته
+  const fp = await getDeviceFingerprint();
+  const devInfo = getDeviceInfo();
+
+  try {
+      const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              username: name,
+              password: pass,
+              fingerprint: fp,
+              browser: devInfo.browser,
+              os: devInfo.os,
+              screenResolution: devInfo.screenResolution,
+              timezone: devInfo.timezone
+          })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+          authToken = data.token;
+          localStorage.setItem('trend_token', authToken);
+          localStorage.setItem('trend_username', data.username);
+          localStorage.setItem('trend_isAdmin', data.isAdmin);
+          errorEl.style.display = 'none';
+
+          // عرض تحذير الجلسات المتعددة إن وُجد
+          if (data.sessionWarning) {
+              alert('⚠️ ' + data.sessionWarning);
+          }
+
+          loadContent();
+      } else {
+          errorEl.textContent = data.error || 'الاسم أو كلمة السر غير صحيحة';
+          errorEl.style.display = 'block';
+      }
+  } catch (err) {
+      errorEl.textContent = 'حدث خطأ في الاتصال بالخادم';
+      errorEl.style.display = 'block';
+  }
+}
+
+function logout() {
+  authToken = null;
+  localStorage.removeItem('trend_token');
+  localStorage.removeItem('trend_username');
+  localStorage.removeItem('trend_isAdmin');
+  document.getElementById('siteContent').style.display = 'none';
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('loginForm').reset();
+  document.getElementById('cardsGrid').innerHTML = '';
+  const adminBtn = document.getElementById('adminBtn');
+  if (adminBtn) adminBtn.remove();
+}
+
+function filterCards() {
+  const val = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = allCards.filter(c => (c.num + ' ' + c.text + ' ' + c.tag).toLowerCase().includes(val));
+  renderCards(filtered);
+
+  if (val.length > 2) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+          fetch('/api/log-search', {
+              method: 'POST',
+              headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ keyword: val })
+          }).catch(console.error);
+      }, 1500);
+  }
+}
+
+// === Page Visibility API: رصد تبديل التبويب (مؤشر احتمالي فقط) ===
+let visibilityChangeCount = 0;
+let visibilityBatchTimeout = null;
+
+document.addEventListener('visibilitychange', () => {
+    if (!authToken) return;
+    visibilityChangeCount++;
+    clearTimeout(visibilityBatchTimeout);
+    // إرسال بشكل مجمّع كل 10 ثوان لتقليل الطلبات
+    visibilityBatchTimeout = setTimeout(() => {
+        if (visibilityChangeCount > 0) {
+            fetch('/api/log-visibility', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ eventType: document.hidden ? 'hidden' : 'visible' })
+            }).catch(() => {});
+            visibilityChangeCount = 0;
+        }
+    }, 10000);
+});
+
+// التحقق من تسجيل الدخول عند تحميل الصفحة
+if (authToken) {
+    loadContent();
+}
+
+// ----- Anti-Copy -----
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('copy', event => {
+    event.preventDefault();
+    event.clipboardData.setData('text/plain', 'النسخ غير مسموح - المحتوى محمي قانونياً');
+});
+</script>
+
+
+</body>
+</html>
