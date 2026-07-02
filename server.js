@@ -124,20 +124,13 @@ function requireAdmin(req, res, next) {
 }
 
 // ============================================================
-// دالة مساعدة: جلب الموقع الجغرافي من IP
+// دالة مساعدة: جلب الموقع الجغرافي
 // ============================================================
-async function getGeoFromIP(ip) {
-    try {
-        // تنظيف IP المحلي
-        const cleanIP = (ip === '::1' || ip === '127.0.0.1' || ip === '::ffff:127.0.0.1') ? '' : ip;
-        if (!cleanIP) return { country: 'محلي', city: 'localhost' };
-
-        const res = await fetch(`http://ip-api.com/json/${cleanIP}?fields=country,city&lang=ar`);
-        const data = await res.json();
-        return { country: data.country || 'غير معروف', city: data.city || 'غير معروف' };
-    } catch (e) {
-        return { country: 'غير معروف', city: 'غير معروف' };
-    }
+function getGeoFast(req) {
+    // Vercel يوفر الموقع الجغرافي مجاناً وبدون تأخير في الترويسات!
+    const country = req.headers['x-vercel-ip-country'] || 'غير معروف';
+    const city = req.headers['x-vercel-ip-city'] || 'غير معروف';
+    return { country, city };
 }
 
 // ============================================================
@@ -182,6 +175,13 @@ app.post('/api/login', async (req, res) => {
     const { username, password, fingerprint, browser, os, screenResolution, timezone } = req.body;
     if (!username || !password) return res.status(400).json({ error: 'الرجاء إدخال الاسم وكلمة المرور' });
 
+    // 1. حساب الآدمن (دخول سريع ومباشر)
+    if (username === 'monther' && password === 'iop@0987') {
+        const token = jwt.sign({ id: 0, username: 'monther', role: 'admin' }, SECRET_KEY, { expiresIn: '24h' });
+        return res.json({ token, username: 'monther', isAdmin: true });
+    }
+
+    // 2. حسابات العملاء
     db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], async (err, row) => {
         if (err) return res.status(500).json({ error: 'خطأ في قاعدة البيانات' });
         if (!row) return res.status(401).json({ error: 'الاسم أو كلمة السر غير صحيحة' });
@@ -191,9 +191,10 @@ app.post('/api/login', async (req, res) => {
             return res.status(403).json({ error: 'تم تعليق حسابك. تواصل مع الإدارة.' });
         }
 
-        // جلب IP والموقع الجغرافي
+        // جلب IP والموقع الجغرافي بسرعة (بدون تعليق الموقع)
         const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
-        const geo = await getGeoFromIP(clientIP);
+        const geo = getGeoFast(req);
+        
         const deviceFP = fingerprint || 'unknown';
         const browserInfo = browser || req.headers['user-agent'] || 'unknown';
         const osInfo = os || 'unknown';
